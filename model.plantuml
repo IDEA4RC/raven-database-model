@@ -1,0 +1,16 @@
+@startuml RavenDB
+' configuration
+hide circle
+skinparam linetype ortho
+'
+
+entity User  {
+    * Id : string
+    --
+    * Name : string
+    * Email : string
+    * Password : string
+    * Role : string
+}
+
+@enduml
