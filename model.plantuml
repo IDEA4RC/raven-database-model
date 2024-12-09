@@ -1,16 +1,87 @@
 @startuml RavenDB
+
 ' configuration
 hide circle
 skinparam linetype ortho
 '
 
-entity User  {
-    * Id : string
+entity User {
+    * id : text <<generated>>
     --
-    * Name : string
-    * Email : string
-    * Password : string
-    * Role : string
+    * username : text
+    * team_name : text <<FK>>
+    * coe_affilliation : text <<FK>>
 }
+
+entity Team {
+    * id : text <<generated>>
+    --
+    * team_name : text
+}
+
+entity CoE {
+    * id : text  <<generated>>
+    --
+    * coe_name : text
+    * coe_country : text
+    * coe_address : text
+    * coe_city : text
+    * coe_cap: text
+}
+
+entity Query {
+    * id : text <<generated>>
+    --
+    * query_name : text
+    * creation_date : text
+    * expiring_date : text
+    * valid: boolean
+    * execution_status : text
+    * user_id : text <<FK>>
+    * permit_id : text <<FK>>
+    * analysis_id : text <<FK>>
+}
+
+entity Permit {
+    * id : text <<generated>>
+    --
+    * permit_name : text
+    * permit_description : text
+    * creation_date : text
+    * expiring_date : text
+    * valid: boolean
+    * user_id : text <<FK>>
+    * coes_related : text[] <<FK>>
+}
+
+entity Analysis {
+    * id : text <<generated>>
+    --
+    * analysis_description : text
+    * creation_date : text
+    * expiring_date : text
+    * user_id : text <<FK>>
+    * permit_id : text <<FK>>
+    * query_related : text[] <<FK>>
+}
+
+entity QueryResult {
+    * id : text <<generated>>
+    --
+    * result : text
+    * creation_date : text
+    * query_id : text <<FK>>
+}
+
+User ||--o{ Team
+User ||--o{ CoE
+Team ||--o{ Permit
+CoE ||--o{ Permit
+Permit ||--o{ Query
+Permit ||--o{ Analysis
+Permit ||--o{ User
+Query ||--o{ QueryResult
+Query ||--o{ User
+Analysis ||--o{ Query
 
 @enduml
