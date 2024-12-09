@@ -84,4 +84,17 @@ Query ||--o{ QueryResult
 Query ||--o{ User
 Analysis ||--o{ Query
 
+legend
+**User**: Representa a un usuario del sistema.
+**Team**: Representa a un equipo al que puede pertenecer un usuario.
+**CoE**: Centro de Excelencia al que puede estar asociado un usuario.
+**Query**: Consultas que pueden ser realizadas por usuarios, equipos o centros de excelencia.
+**Permit**: Permisos que pueden tener usuarios, equipos o centros de excelencia.
+**Analysis**: Análisis que pueden estar asociados a consultas.
+**QueryResult**: Resultados generados por las consultas.
+
+||--o{ : Relación uno a muchos (un elemento puede estar asociado a muchos otros).
+}o--|| : Relación muchos a uno (muchos elementos pueden estar asociados a uno).
+endlegend
+
 @enduml
