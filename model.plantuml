@@ -51,7 +51,7 @@ entity Permit {
     * expiring_date : text
     * valid: boolean
     * user_id : text <<FK>>
-    * coes_related : text[] <<FK>>
+    * coe_related : text <<FK>>
 }
 
 entity Analysis {
@@ -62,7 +62,7 @@ entity Analysis {
     * expiring_date : text
     * user_id : text <<FK>>
     * permit_id : text <<FK>>
-    * query_related : text[] <<FK>>
+    * query_related : text <<FK>>
 }
 
 entity QueryResult {
@@ -74,12 +74,12 @@ entity QueryResult {
 }
 
 User ||--o{ Team
-User ||--o{ CoE
+CoE ||--o{ User
 Team ||--o{ Permit
 CoE ||--o{ Permit
 Permit ||--o{ Query
 Permit ||--o{ Analysis
-Permit ||--o{ User
+User ||--o{ Permit
 Query ||--o{ QueryResult
 Query ||--o{ User
 Analysis ||--o{ Query
