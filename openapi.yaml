@@ -1,0 +1,839 @@
+openapi: 3.0.0
+info:
+  title: RavenDB API
+  version: 1.0.0
+  description: API to manage users, teams, CoEs, queries, permits, analyses and query results
+
+tags:
+- name: Users
+  description: Operations related to users
+- name: Teams
+  description: Operations related to teams
+- name: CoEs
+  description: Operations related to CoEs
+- name: Queries
+  description: Operations related to queries
+- name: Permits
+  description: Operations related to permits
+- name: Analyses
+  description: Operations related to analyses
+- name: QueryResults
+  description: Operations related to query results
+
+paths:
+  /users:
+    get:
+      tags:
+      - Users
+      summary: Get all users
+      responses:
+        '200':
+          description: List of users
+    post:
+      tags:
+      - Users
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created
+
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Get a user by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: User found
+    put:
+      tags:
+      - Users
+      summary: Update a user by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated
+    delete:
+      tags:
+      - Users
+      summary: Delete a user by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: User deleted
+
+  /users/{id}/permits:
+    get:
+      tags:
+      - Users
+      - Permits
+      summary: Get permits by user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of user's permits
+
+  /users/{id}/queries:
+    get:
+      tags:
+      - Users
+      - Queries
+      summary: Get queries by user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of user's queries
+
+  /users/{id}/analyses:
+    get:
+      tags:
+      - Users
+      - Analyses
+      summary: Get analyses by user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of user's analyses
+
+  /teams:
+    get:
+      tags:
+      - Teams
+      summary: Get all teams
+      responses:
+        '200':
+          description: List of teams
+    post:
+      tags:
+      - Teams
+      summary: Create a new team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '201':
+          description: Team created
+
+  /teams/{id}:
+    get:
+      tags:
+      - Teams
+      summary: Get a team by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Team found
+    put:
+      tags:
+      - Teams
+      summary: Update a team by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '200':
+          description: Team updated
+    delete:
+      tags:
+      - Teams
+      summary: Delete a team by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Team deleted
+
+  /teams/{id}/users:
+    get:
+      tags:
+      - Teams
+      - Users
+      summary: Get users by team
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of team's users
+
+  /teams/{id}/permits:
+    get:
+      tags:
+      - Teams
+      - Permits
+      summary: Get permits by team
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of team's permits
+
+  /teams/{id}/coes:
+    get:
+      tags:
+      - Teams
+      - CoEs
+      summary: Get CoEs associated with a team
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of team's CoEs
+
+  /teams/{id}/queries:
+    get:
+      tags:
+      - Teams
+      - Queries
+      summary: Get queries associated with a team
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of team's queries
+
+  /coes:
+    get:
+      tags:
+      - CoEs
+      summary: Get all CoEs
+      responses:
+        '200':
+          description: List of CoEs
+    post:
+      tags:
+      - CoEs
+      summary: Create a new CoE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoE'
+      responses:
+        '201':
+          description: CoE created
+
+  /coes/{id}:
+    get:
+      tags:
+      - CoEs
+      summary: Get a CoE by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: CoE found
+    put:
+      tags:
+      - CoEs
+      summary: Update a CoE by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoE'
+      responses:
+        '200':
+          description: CoE updated
+    delete:
+      tags:
+      - CoEs
+      summary: Delete a CoE by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: CoE deleted
+
+  /coes/{id}/users:
+    get:
+      tags:
+      - CoEs
+      - Users
+      summary: Get users by CoE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of CoE's users
+
+  /coes/{id}/permits:
+    get:
+      tags:
+      - CoEs
+      - Permits
+      summary: Get permits by CoE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of CoE's permits
+
+  /coes/{id}/queries:
+    get:
+      tags:
+      - CoEs
+      - Queries
+      summary: Get queries associated with a CoE
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of CoE's queries
+
+  /queries:
+    get:
+      tags:
+      - Queries
+      summary: Get all queries
+      responses:
+        '200':
+          description: List of queries
+    post:
+      tags:
+      - Queries
+      summary: Create a new query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '201':
+          description: Query created
+
+  /queries/{id}:
+    get:
+      tags:
+      - Queries
+      summary: Get a query by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Query found
+    put:
+      tags:
+      - Queries
+      summary: Update a query by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: Query updated
+    delete:
+      tags:
+      - Queries
+      summary: Delete a query by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Query deleted
+
+  /queries/{id}/results:
+    get:
+      tags:
+      - Queries
+      - QueryResults
+      summary: Get query results by query
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of query results
+
+  /permits:
+    get:
+      tags:
+      - Permits
+      summary: Get all permits
+      responses:
+        '200':
+          description: List of permits
+    post:
+      tags:
+      - Permits
+      summary: Create a new permit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permit'
+      responses:
+        '201':
+          description: Permit created
+
+  /permits/{id}:
+    get:
+      tags:
+      - Permits
+      summary: Get a permit by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Permit found
+    put:
+      tags:
+      - Permits
+      summary: Update a permit by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permit'
+      responses:
+        '200':
+          description: Permit updated
+    delete:
+      tags:
+      - Permits
+      summary: Delete a permit by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Permit deleted
+
+  /permits/user/{userId}:
+    get:
+      tags:
+      - Permits
+      - Users
+      summary: Get permits by user
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of user's permits
+
+  /analyses:
+    get:
+      tags:
+      - Analyses
+      summary: Get all analyses
+      responses:
+        '200':
+          description: List of analyses
+    post:
+      tags:
+      - Analyses
+      summary: Create a new analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Analysis'
+      responses:
+        '201':
+          description: Analysis created
+
+  /analyses/{id}:
+    get:
+      tags:
+      - Analyses
+      summary: Get an analysis by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Analysis found
+    put:
+      tags:
+      - Analyses
+      summary: Update an analysis by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Analysis'
+      responses:
+        '200':
+          description: Analysis updated
+    delete:
+      tags:
+      - Analyses
+      summary: Delete an analysis by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Analysis deleted
+
+  /analyses/{id}/permits:
+    get:
+      tags:
+      - Analyses
+      - Permits
+      summary: Get permits associated with an analysis
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of analysis permits
+
+  /analyses/user/{userId}:
+    get:
+      tags:
+      - Analyses
+      - Users
+      summary: Get analyses by user
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of user's analyses
+
+  /query-results:
+    get:
+      tags:
+      - QueryResults
+      summary: Get all query results
+      responses:
+        '200':
+          description: List of query results
+    post:
+      tags:
+      - QueryResults
+      summary: Create a new query result
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryResult'
+      responses:
+        '201':
+          description: Query result created
+
+  /query-results/{id}:
+    get:
+      tags:
+      - QueryResults
+      summary: Get a query result by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Query result found
+    put:
+      tags:
+      - QueryResults
+      summary: Update a query result by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryResult'
+      responses:
+        '200':
+          description: Query result updated
+    delete:
+      tags:
+      - QueryResults
+      summary: Delete a query result by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Query result deleted
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        team_name:
+          type: string
+        coe_affilliation:
+          type: string
+
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+        team_name:
+          type: string
+
+    CoE:
+      type: object
+      properties:
+        id:
+          type: string
+        coe_name:
+          type: string
+        coe_country:
+          type: string
+        coe_address:
+          type: string
+        coe_city:
+          type: string
+        coe_cap:
+          type: string
+
+    Query:
+      type: object
+      properties:
+        id:
+          type: string
+        query_name:
+          type: string
+        creation_date:
+          type: string
+        expiring_date:
+          type: string
+        valid:
+          type: boolean
+        execution_status:
+          type: string
+        user_id:
+          type: string
+        permit_id:
+          type: string
+        analysis_id:
+          type: string
+
+    Permit:
+      type: object
+      properties:
+        id:
+          type: string
+        permit_name:
+          type: string
+        permit_description:
+          type: string
+        creation_date:
+          type: string
+        expiring_date:
+          type: string
+        valid:
+          type: boolean
+        user_id:
+          type: string
+        coe_related:
+          type: string
+
+    Analysis:
+      type: object
+      properties:
+        id:
+          type: string
+        analysis_description:
+          type: string
+        creation_date:
+          type: string
+        expiring_date:
+          type: string
+        user_id:
+          type: string
+        permit_id:
+          type: string
+        query_related:
+          type: string
+
+    QueryResult:
+      type: object
+      properties:
+        id:
+          type: string
+        result:
+          type: string
+        creation_date:
+          type: string
+        query_id:
+          type: string
