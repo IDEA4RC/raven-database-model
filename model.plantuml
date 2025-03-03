@@ -3,14 +3,14 @@
 ' configuration
 hide circle
 skinparam linetype ortho
-'
 
 entity User {
     * id : text <<generated>>
     --
     * username : text
-    * team_name : text <<FK>>
-    * coe_affilliation : text <<FK>>
+    * team_id : text <<FK>>
+    * coe_id : text <<FK>>
+    * user_type_id : text <<FK>>
 }
 
 entity Team {
@@ -20,26 +20,25 @@ entity Team {
 }
 
 entity CoE {
-    * id : text  <<generated>>
-    --
-    * coe_name : text
-    * coe_country : text
-    * coe_address : text
-    * coe_city : text
-    * coe_cap: text
-}
-
-entity Query {
     * id : text <<generated>>
     --
-    * query_name : text
-    * creation_date : text
-    * expiring_date : text
-    * valid: boolean
-    * execution_status : text
-    * user_id : text <<FK>>
-    * permit_id : text <<FK>>
-    * analysis_id : text <<FK>>
+    * coe_name : text
+    * coe_address : text
+    * coe_city : text
+    * coe_cap : text
+}
+
+entity UserType {
+    * id : text <<generated>>
+    --
+    * name : text
+    * description : text
+    * metadata_search : integer
+    * data_access : text
+    * cohort_builder : text
+    * data_quality : text
+    * algorithms : text
+    * results_report : text
 }
 
 entity Permit {
@@ -48,53 +47,136 @@ entity Permit {
     * permit_name : text
     * permit_description : text
     * creation_date : text
+    * update_date : text
     * expiring_date : text
-    * valid: boolean
+    * valid_status : integer <<FK>>
     * user_id : text <<FK>>
-    * coe_related : text <<FK>>
+    * team_id : text <<FK>>
+    * coe_id : text <<FK>>
+    * workspace_id : text <<FK>>
+    * metadata_id : text <<FK>>
+}
+
+entity Workspace {
+    * id : text <<generated>>
+    --
+    * name : text
+    * description : text
+    * creation_date : text
+    * user_id : text <<FK>>
+    * team_id : text <<FK>>
+    * metadata_search_status : integer <<FK>>
+    * data_access_status : integer <<FK>>
+    * data_analysis_status : integer <<FK>>
+    * result_report_status : integer <<FK>>
+}
+
+entity Status {
+    * id : integer <<generated>>
+    --
+    * status_type : text <<enum: "Permit", "WorkspacePhase">>
+    * status_name : text
+    * status_description : text
+}
+
+entity WorkspaceHistory {
+    * id : text <<generated>>
+    --
+    * date : text
+    * action : text
+    * phase : text
+    * details : text
+    * user_id : text <<FK>>
+    * workspace_id : text <<FK>>
 }
 
 entity Analysis {
     * id : text <<generated>>
     --
+    * analysis_name : text
     * analysis_description : text
     * creation_date : text
+    * update_date : text
     * expiring_date : text
+    * execution_status : integer <<FK>>
     * user_id : text <<FK>>
     * permit_id : text <<FK>>
-    * query_related : text <<FK>>
+    * workspace_id : text <<FK>>
 }
 
-entity QueryResult {
+entity Algorithm {
     * id : text <<generated>>
     --
-    * result : text
+    * method_name : text
     * creation_date : text
-    * query_id : text <<FK>>
+    * update_date : text
+    * variables_selected : integer[] <<FK>> 
+    * execution_status : integer <<FK>>
+    * analysis_id : text <<FK>>
+    * workspace_id : text <<FK>>
+    * cohort_ids : integer[] <<FK>>
+    * results_id : text <<FK>>
 }
 
-User ||--o{ Team
-CoE ||--o{ User
+entity MetadataSearch {
+    * id : text <<generated>>
+    --
+    * update_date : text
+    * created_date : text
+    * user_id : text <<FK>>
+    * type_cancer : text
+}
+
+entity Cohort {
+    * id : integer <<generated>>
+    --
+    * query_name : text
+    * creation_date : text
+    * update_date : text
+    * cohort_query : text
+    * cohort_result : integer[]
+    * analysis_id : text <<FK>>
+}
+
+entity VariablesPreparation {
+    * id : integer <<generated>>
+    --
+    * category : text
+    * processing_method : text
+    * output : text
+    * name : text
+    * description : text
+    * user_id : text <<FK>>
+    * workspace_id : text <<FK>>
+    * analysis_id : text <<FK>>
+}
+
+' Relationships
+User }o--|| Team
+User }o--|| CoE
+User }o--|| UserType
 Team ||--o{ Permit
 CoE ||--o{ Permit
-Permit ||--o{ Query
-Permit ||--o{ Analysis
-User ||--o{ Permit
-Query ||--o{ QueryResult
-Query ||--o{ User
-Analysis ||--o{ Query
+Workspace ||--o{ Permit
+Workspace ||--o{ Analysis
+Workspace ||--o{ WorkspaceHistory
+Status ||--o{ Permit
+Status ||--o{ Workspace
+Analysis ||--o{ Algorithm
+Analysis ||--o{ Cohort
+MetadataSearch ||--o{ Permit
+VariablesPreparation ||--o{ Algorithm
+VariablesPreparation ||--o{ Analysis
+Cohort ||--o{ Analysis
 
 legend
-**User**: Representa a un usuario del sistema.
-**Team**: Representa a un equipo al que puede pertenecer un usuario.
-**CoE**: Centro de Excelencia al que puede estar asociado un usuario.
-**Query**: Consultas que pueden ser realizadas por usuarios, equipos o centros de excelencia.
-**Permit**: Permisos que pueden tener usuarios, equipos o centros de excelencia.
-**Analysis**: Análisis que pueden estar asociados a consultas.
-**QueryResult**: Resultados generados por las consultas.
-
-||--o{ : Relación uno a muchos (un elemento puede estar asociado a muchos otros).
-}o--|| : Relación muchos a uno (muchos elementos pueden estar asociados a uno).
+**User**: System users with team and CoE affiliations.
+**Workspace**: Collaborative environment with phase tracking.
+**Status**: Standardized statuses with type categorization.
+**VariablesPreparation**: Track custom variables created during analysis.
+**Cohort**: Manage cohort queries and results.
+||--o{ : One-to-many relationship
+}o--|| : Many-to-one relationship
 endlegend
 
 @enduml
