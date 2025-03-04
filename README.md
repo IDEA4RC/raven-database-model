@@ -1,7 +1,7 @@
 # raven-database-model
 The UML for the RAVEN Database
 
-![alt text](model.png)
+![alt text](uml.png)
 
 
 ## Contributors

@@ -4,28 +4,31 @@
 hide circle
 skinparam linetype ortho
 
+' ---- Entities ----
 entity User {
     * id : text <<generated>>
     --
     * username : text
-    * team_id : text <<FK>>
-    * coe_id : text <<FK>>
-    * user_type_id : text <<FK>>
+    * team_ids : text[] <<FK>>  ' Maps to Team.id
+    * coe_affiliation : text <<FK>>  ' Maps to CoE.id (Keycloak ID)
+    * user_type_id : text <<FK>>  ' Maps to UserType.id
 }
 
 entity Team {
     * id : text <<generated>>
     --
     * team_name : text
+    * organization_name : text
+    * address : text
 }
 
 entity CoE {
-    * id : text <<generated>>
+    * id : text <<Keycloak ID>>  ' Updated per doc
     --
     * coe_name : text
     * coe_address : text
     * coe_city : text
-    * coe_cap : text
+    * coe_capital : text  ' Renamed from coe_cap
 }
 
 entity UserType {
@@ -33,28 +36,39 @@ entity UserType {
     --
     * name : text
     * description : text
-    * metadata_search : integer
-    * data_access : text
-    * cohort_builder : text
-    * data_quality : text
-    * algorithms : text
-    * results_report : text
+    * metadata_search : integer  ' Enum: none/View/Edit/Delete/Create
+    * data_access : integer      ' Enum: none/yes
+    * cohort_builder : integer   ' Enum: none/yes
+    * data_quality : integer     ' Enum: none/View/Export
+    * algorithms : integer       ' Enum: none/View/Edit/Delete/Export/Create
+    * results_report : integer   ' Enum: none/View/Edit/Export
 }
 
 entity Permit {
     * id : text <<generated>>
     --
-    * permit_name : text
-    * permit_description : text
+    * permit_name : text <<FK>>  ' FK to Workspace.name
     * creation_date : text
     * update_date : text
     * expiring_date : text
-    * valid_status : integer <<FK>>
-    * user_id : text <<FK>>
-    * team_id : text <<FK>>
-    * coe_id : text <<FK>>
-    * workspace_id : text <<FK>>
-    * metadata_id : text <<FK>>
+    * status : integer  ' Enum: pending/initiated/submitted/rejected/granted/expired
+    * team_id : text <<FK>>  ' FK to Team.id
+    * user_team_list : text[]  ' Array of User.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * metadata_id : text <<FK>>  ' FK to MetadataSearch.id
+}
+
+entity MetadataSearch {
+    * id : text <<generated>>
+    --
+    * update_date : text
+    * created_date : text
+    * user_id : text <<FK>>  ' FK to User.id
+    * type_cancer : text  ' e.g., H&N, Sarc
+    * id_variables : text[]  ' Array of variable IDs
+    * id_coes : text[]  ' Array of CoE IDs (Keycloak IDs)
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * status : boolean  ' pending/completed
 }
 
 entity Workspace {
@@ -62,21 +76,15 @@ entity Workspace {
     --
     * name : text
     * description : text
+    * status : text  ' User journey phase (text)
     * creation_date : text
-    * user_id : text <<FK>>
-    * team_id : text <<FK>>
-    * metadata_search_status : integer <<FK>>
-    * data_access_status : integer <<FK>>
-    * data_analysis_status : integer <<FK>>
-    * result_report_status : integer <<FK>>
-}
-
-entity Status {
-    * id : integer <<generated>>
-    --
-    * status_type : text <<enum: "Permit", "WorkspacePhase">>
-    * status_name : text
-    * status_description : text
+    * user_id : text <<FK>>  ' FK to User.id
+    * team_id : text <<FK>>  ' FK to Team.id
+    * last_modification_date : text
+    * metadata_search : integer  ' Enum: pending/in progress/completed
+    * data_access : integer      ' Enum: pending/initiated/submitted/rejected/granted/expired
+    * data_analysis : integer    ' Enum: pending/in progress/completed
+    * result_report : integer    ' Enum: pending/in progress/completed
 }
 
 entity WorkspaceHistory {
@@ -86,8 +94,8 @@ entity WorkspaceHistory {
     * action : text
     * phase : text
     * details : text
-    * user_id : text <<FK>>
-    * workspace_id : text <<FK>>
+    * user_id : text <<FK>>  ' FK to User.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
 }
 
 entity Analysis {
@@ -98,10 +106,36 @@ entity Analysis {
     * creation_date : text
     * update_date : text
     * expiring_date : text
-    * execution_status : integer <<FK>>
-    * user_id : text <<FK>>
-    * permit_id : text <<FK>>
-    * workspace_id : text <<FK>>
+    * user_id : text <<FK>>  ' FK to User.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+}
+
+entity Cohort {
+    * id : text <<generated>>
+    --
+    * cohort_name : text
+    * creation_date : text
+    * update_date : text
+    * status : integer  ' Enum (unspecified in doc)
+    * cohort_query : text
+    * cohort_result : text[]  ' Array of data IDs
+    * user_id : text <<FK>>  ' FK to User.id
+    * analysis_id : text <<FK>>  ' FK to Analysis.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+}
+
+entity VariablesPreparation {
+    * id : text <<generated>>
+    --
+    * category : text
+    * variables_related : text[]  ' Array of variable IDs
+    * processing_method : text
+    * output : text  ' Serialized object (e.g., {range: 18-33...})
+    * name : text
+    * description : text
+    * user_id : text <<FK>>  ' FK to User.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * analysis_id : text <<FK>>  ' FK to Analysis.id
 }
 
 entity Algorithm {
@@ -110,73 +144,28 @@ entity Algorithm {
     * method_name : text
     * creation_date : text
     * update_date : text
-    * variables_selected : integer[] <<FK>> 
-    * execution_status : integer <<FK>>
-    * analysis_id : text <<FK>>
-    * workspace_id : text <<FK>>
-    * cohort_ids : integer[] <<FK>>
-    * results_id : text <<FK>>
+    * variables_selected : text[]  ' Array of variable IDs
+    * execution_status : integer  ' Enum (unspecified)
+    * analysis_id : text <<FK>>  ' FK to Analysis.id
+    * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * cohort_ids : text[]  ' Array of Cohort IDs
+    * results_id : text <<FK>>  ' FK to Results (if defined)
 }
 
-entity MetadataSearch {
-    * id : text <<generated>>
-    --
-    * update_date : text
-    * created_date : text
-    * user_id : text <<FK>>
-    * type_cancer : text
-}
-
-entity Cohort {
-    * id : integer <<generated>>
-    --
-    * query_name : text
-    * creation_date : text
-    * update_date : text
-    * cohort_query : text
-    * cohort_result : integer[]
-    * analysis_id : text <<FK>>
-}
-
-entity VariablesPreparation {
-    * id : integer <<generated>>
-    --
-    * category : text
-    * processing_method : text
-    * output : text
-    * name : text
-    * description : text
-    * user_id : text <<FK>>
-    * workspace_id : text <<FK>>
-    * analysis_id : text <<FK>>
-}
-
-' Relationships
+' ---- Relationships ----
 User }o--|| Team
 User }o--|| CoE
 User }o--|| UserType
-Team ||--o{ Permit
 CoE ||--o{ Permit
+Team ||--o{ Permit
 Workspace ||--o{ Permit
-Workspace ||--o{ Analysis
 Workspace ||--o{ WorkspaceHistory
-Status ||--o{ Permit
-Status ||--o{ Workspace
-Analysis ||--o{ Algorithm
+Workspace ||--o{ Analysis
 Analysis ||--o{ Cohort
-MetadataSearch ||--o{ Permit
+Analysis ||--o{ Algorithm
 VariablesPreparation ||--o{ Algorithm
-VariablesPreparation ||--o{ Analysis
-Cohort ||--o{ Analysis
-
-legend
-**User**: System users with team and CoE affiliations.
-**Workspace**: Collaborative environment with phase tracking.
-**Status**: Standardized statuses with type categorization.
-**VariablesPreparation**: Track custom variables created during analysis.
-**Cohort**: Manage cohort queries and results.
-||--o{ : One-to-many relationship
-}o--|| : Many-to-one relationship
-endlegend
+MetadataSearch ||--o{ Permit
+MetadataSearch ||--o{ Workspace
+MetadataSearch ||--o{ User
 
 @enduml
