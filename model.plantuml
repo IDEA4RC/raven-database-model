@@ -85,6 +85,7 @@ entity Workspace {
     * data_access : integer      ' Enum: pending/initiated/submitted/rejected/granted/expired
     * data_analysis : integer    ' Enum: pending/in progress/completed
     * result_report : integer    ' Enum: pending/in progress/completed
+    * v6_study_id : text <<FK>>  ' An ID to the study in v6
 }
 
 entity WorkspaceHistory {
@@ -96,6 +97,7 @@ entity WorkspaceHistory {
     * details : text
     * user_id : text <<FK>>  ' FK to User.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * v6_study_id : text <<FK>>  ' An ID to the study in v6
 }
 
 entity Analysis {
@@ -108,12 +110,14 @@ entity Analysis {
     * expiring_date : text
     * user_id : text <<FK>>  ' FK to User.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
+    * v6_session_id : text <<FK>>  ' An ID to the session in v6
 }
 
 entity Cohort {
     * id : text <<generated>>
     --
     * cohort_name : text
+    * cohort_description : text
     * creation_date : text
     * update_date : text
     * status : integer  ' Enum (unspecified in doc)
@@ -122,20 +126,7 @@ entity Cohort {
     * user_id : text <<FK>>  ' FK to User.id
     * analysis_id : text <<FK>>  ' FK to Analysis.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
-}
-
-entity VariablesPreparation {
-    * id : text <<generated>>
-    --
-    * category : text
-    * variables_related : text[]  ' Array of variable IDs
-    * processing_method : text
-    * output : text  ' Serialized object (e.g., {range: 18-33...})
-    * name : text
-    * description : text
-    * user_id : text <<FK>>  ' FK to User.id
-    * workspace_id : text <<FK>>  ' FK to Workspace.id
-    * analysis_id : text <<FK>>  ' FK to Analysis.id
+    * v6_dataframe_id : text <<FK>>  ' An ID to the dataframe in v6
 }
 
 entity Algorithm {
@@ -144,12 +135,19 @@ entity Algorithm {
     * method_name : text
     * creation_date : text
     * update_date : text
-    * variables_selected : text[]  ' Array of variable IDs
+    * input : json ' JSON object containing selected variables
     * execution_status : integer  ' Enum (unspecified)
     * analysis_id : text <<FK>>  ' FK to Analysis.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
-    * cohort_ids : text[]  ' Array of Cohort IDs
     * results_id : text <<FK>>  ' FK to Results (if defined)
+    * v6_task_id : text <<FK>>  ' An ID to the task in v6
+}
+
+entity CohortAlgorithm {
+    * id : text <<generated>>
+    --
+    * cohort_id : text <<FK>>  ' FK to Cohort.id
+    * algorithm_id : text <<FK>>  ' FK to Algorithm.id
 }
 
 ' ---- Relationships ----
@@ -163,9 +161,18 @@ Workspace ||--o{ WorkspaceHistory
 Workspace ||--o{ Analysis
 Analysis ||--o{ Cohort
 Analysis ||--o{ Algorithm
-VariablesPreparation ||--o{ Algorithm
 MetadataSearch ||--o{ Permit
 MetadataSearch ||--o{ Workspace
 MetadataSearch ||--o{ User
+
+Cohort }|--|| Analysis
+Cohort }|--|| Workspace
+Cohort }|--|| User
+
+Algorithm }|--|| Analysis
+Algorithm }|--|| Workspace
+
+Cohort }|--|{ CohortAlgorithm
+Algorithm }|--|{ CohortAlgorithm
 
 @enduml
