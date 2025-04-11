@@ -6,11 +6,11 @@ skinparam linetype ortho
 
 ' ---- Entities ----
 entity User {
-    * id : text <<generated>>
+    * id : text <<Keycloak ID>>
     --
     * username : text
     * team_ids : text[] <<FK>>  ' Maps to Team.id
-    * coe_affiliation : text <<FK>>  ' Maps to CoE.id (Keycloak ID)
+    * org_affiliation : text <<FK>>  ' Maps to Organization.id 
     * user_type_id : text <<FK>>  ' Maps to UserType.id
 }
 
@@ -22,13 +22,13 @@ entity Team {
     * address : text
 }
 
-entity CoE {
-    * id : text <<Keycloak ID>>  ' Updated per doc
+entity Organization {
+    * id : text <<generated>>  ' Updated per doc
     --
-    * coe_name : text
-    * coe_address : text
-    * coe_city : text
-    * coe_capital : text  ' Renamed from coe_cap
+    * org_name : text
+    * org_address : text
+    * org_city : text
+    * org_type : integer  ' Enum: coe/academic/industry
 }
 
 entity UserType {
@@ -48,10 +48,10 @@ entity Permit {
     * id : text <<generated>>
     --
     * permit_name : text <<FK>>  ' FK to Workspace.name
-    * creation_date : text
-    * update_date : text
-    * expiring_date : text
-    * status : integer  ' Enum: pending/initiated/submitted/rejected/granted/expired
+    * creation_date : timestamp
+    * update_date : timestamp
+    * expiring_date : timestamp
+    * status : integer  ' Enum: pending/initiated/submitted/rejected/granted/expired/cancelled
     * team_id : text <<FK>>  ' FK to Team.id
     * user_team_list : text[]  ' Array of User.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
@@ -61,12 +61,12 @@ entity Permit {
 entity MetadataSearch {
     * id : text <<generated>>
     --
-    * update_date : text
-    * created_date : text
-    * user_id : text <<FK>>  ' FK to User.id
+    * update_date : timestamp
+    * created_date : timestamp
+    * creator_id : text <<FK>>  ' FK to User.id (Related to Keycloak)
     * type_cancer : text  ' e.g., H&N, Sarc
     * id_variables : text[]  ' Array of variable IDs
-    * id_coes : text[]  ' Array of CoE IDs (Keycloak IDs)
+    * id_orgs : text[]  ' Array of Orgs IDs (FK to Organization.id)
     * workspace_id : text <<FK>>  ' FK to Workspace.id
     * status : boolean  ' pending/completed
 }
@@ -77,10 +77,10 @@ entity Workspace {
     * name : text
     * description : text
     * status : text  ' User journey phase (text)
-    * creation_date : text
-    * user_id : text <<FK>>  ' FK to User.id
+    * creation_date : timestamp
+    * creator_id : text <<FK>>  ' FK to User.id (Related to Keycloak)
     * team_id : text <<FK>>  ' FK to Team.id
-    * last_modification_date : text
+    * last_modification_date : timestamp
     * metadata_search : integer  ' Enum: pending/in progress/completed
     * data_access : integer      ' Enum: pending/initiated/submitted/rejected/granted/expired
     * data_analysis : integer    ' Enum: pending/in progress/completed
@@ -95,7 +95,7 @@ entity WorkspaceHistory {
     * action : text
     * phase : text
     * details : text
-    * user_id : text <<FK>>  ' FK to User.id
+    * creator_id : text <<FK>>  ' FK to User.id (Related to Keycloak)
     * workspace_id : text <<FK>>  ' FK to Workspace.id
     * v6_study_id : text <<FK>>  ' An ID to the study in v6
 }
@@ -105,10 +105,10 @@ entity Analysis {
     --
     * analysis_name : text
     * analysis_description : text
-    * creation_date : text
-    * update_date : text
+    * creation_date : timestamp
+    * update_date : timestamp
     * expiring_date : text
-    * user_id : text <<FK>>  ' FK to User.id
+    * user_id : text <<FK>>  ' FK to User.id (Related to Keycloak)
     * workspace_id : text <<FK>>  ' FK to Workspace.id
     * v6_session_id : text <<FK>>  ' An ID to the session in v6
 }
@@ -118,12 +118,12 @@ entity Cohort {
     --
     * cohort_name : text
     * cohort_description : text
-    * creation_date : text
-    * update_date : text
+    * creation_date : timestamp
+    * update_date : timestamp
     * status : integer  ' Enum (unspecified in doc)
     * cohort_query : text
     * cohort_result : text[]  ' Array of data IDs
-    * user_id : text <<FK>>  ' FK to User.id
+    * user_id : text <<FK>>  ' FK to User.id (Related to Keycloak)
     * analysis_id : text <<FK>>  ' FK to Analysis.id
     * workspace_id : text <<FK>>  ' FK to Workspace.id
     * v6_dataframe_id : text <<FK>>  ' An ID to the dataframe in v6
@@ -133,8 +133,8 @@ entity Algorithm {
     * id : text <<generated>>
     --
     * method_name : text
-    * creation_date : text
-    * update_date : text
+    * creation_date : timestamp
+    * update_date : timestamp
     * input : json ' JSON object containing selected variables
     * execution_status : integer  ' Enum (unspecified)
     * analysis_id : text <<FK>>  ' FK to Analysis.id
@@ -152,20 +152,21 @@ entity CohortAlgorithm {
 
 ' ---- Relationships ----
 User }o--|| Team
-User }o--|| CoE
+User }o--|| Organization
 User }o--|| UserType
-CoE ||--o{ Permit
+Organization ||--o{ Permit
 Team ||--o{ Permit
-Workspace ||--o{ Permit
+
+Workspace ||--|| Permit
+Workspace ||--|| MetadataSearch
+MetadataSearch ||--|| Permit
+
 Workspace ||--o{ WorkspaceHistory
 Workspace ||--o{ Analysis
 Analysis ||--o{ Cohort
 Analysis ||--o{ Algorithm
-MetadataSearch ||--o{ Permit
-MetadataSearch ||--o{ Workspace
 MetadataSearch ||--o{ User
 
-Cohort }|--|| Analysis
 Cohort }|--|| Workspace
 Cohort }|--|| User
 
