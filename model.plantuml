@@ -1,4 +1,4 @@
-@startuml RavenDB_Improved
+@startuml RavenDB
 
 hide circle
 skinparam linetype ortho
