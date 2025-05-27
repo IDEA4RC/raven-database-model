@@ -31,29 +31,7 @@ PUT    /api/organizations/{id}       | Fully update an existing organization by 
 PATCH  /api/organizations/{id}       | Partially update an existing organization by ID
 DELETE /api/organizations/{id}       | Remove an existing organization by ID
 
-# 4. Team
-
-ENDPOINT                      | DESCRIPTION
-------------------------------|--------------------------------------------
-GET    /api/teams            | Retrieve all teams
-GET    /api/teams/{id}       | Retrieve a single team by ID
-POST   /api/teams            | Create a new team
-PUT    /api/teams/{id}       | Fully update an existing team by ID
-PATCH  /api/teams/{id}       | Partially update an existing team by ID
-DELETE /api/teams/{id}       | Remove an existing team by ID
-
-# 5. UserTeam 
-
-ENDPOINT                                | DESCRIPTION
-----------------------------------------|------------------------------------------------------
-GET    /api/user-teams                 | Retrieve all user-team relationships
-GET    /api/user-teams/{userId}/{teamId}  | Retrieve a single relationship by User + Team IDs
-POST   /api/user-teams                 | Create a new user-team relationship
-PUT    /api/user-teams/{userId}/{teamId}   | Fully update an existing relationship
-PATCH  /api/user-teams/{userId}/{teamId}   | Partially update an existing relationship
-DELETE /api/user-teams/{userId}/{teamId}   | Remove an existing user-team relationship
-
-# 6. Workspace
+# 4. Workspace
 
 ENDPOINT                        | DESCRIPTION
 --------------------------------|--------------------------------------------
@@ -64,7 +42,7 @@ PUT    /api/workspaces/{id}     | Fully update an existing workspace by ID
 PATCH  /api/workspaces/{id}     | Partially update an existing workspace by ID
 DELETE /api/workspaces/{id}     | Remove an existing workspace by ID
 
-# 7. WorkspaceHistory
+# 5. WorkspaceHistory
 
 ENDPOINT                                 | DESCRIPTION
 -----------------------------------------|--------------------------------------------
@@ -75,7 +53,7 @@ PUT    /api/workspace-histories/{id}    | Fully update an existing workspace his
 PATCH  /api/workspace-histories/{id}    | Partially update an existing workspace history entry
 DELETE /api/workspace-histories/{id}    | Remove an existing workspace history entry
 
-# 8. Permit
+# 6. Permit
 
 ENDPOINT                      | DESCRIPTION
 ------------------------------|--------------------------------------------
@@ -86,7 +64,7 @@ PUT    /api/permits/{id}     | Fully update an existing permit
 PATCH  /api/permits/{id}     | Partially update an existing permit
 DELETE /api/permits/{id}     | Remove an existing permit
 
-# 9. MetadataSearch
+# 7. MetadataSearch
 
 ENDPOINT                          | DESCRIPTION
 ----------------------------------|---------------------------------------------
@@ -97,7 +75,7 @@ PUT    /api/metadata-searches/{id}| Fully update an existing metadata search rec
 PATCH  /api/metadata-searches/{id}| Partially update an existing metadata search record
 DELETE /api/metadata-searches/{id}| Remove an existing metadata search record
 
-# 10. Analysis
+# 8. Analysis
 
 ENDPOINT                       | DESCRIPTION
 -------------------------------|--------------------------------------------
@@ -108,7 +86,7 @@ PUT    /api/analyses/{id}      | Fully update an existing analysis
 PATCH  /api/analyses/{id}      | Partially update an existing analysis
 DELETE /api/analyses/{id}      | Remove an existing analysis
 
-# 11. Cohort
+# 9. Cohort
 
 ENDPOINT                     | DESCRIPTION
 -----------------------------|--------------------------------------------
@@ -119,7 +97,7 @@ PUT    /api/cohorts/{id}    | Fully update an existing cohort
 PATCH  /api/cohorts/{id}    | Partially update an existing cohort
 DELETE /api/cohorts/{id}    | Remove an existing cohort
 
-# 12. CohortResult 
+# 10. CohortResult 
 
 ENDPOINT                                 | DESCRIPTION
 -----------------------------------------|-------------------------------------------------------
@@ -130,7 +108,7 @@ PUT    /api/cohort-results/{cohortId}/{dataId}  | Fully update an existing cohor
 PATCH  /api/cohort-results/{cohortId}/{dataId}  | Partially update an existing cohort-result
 DELETE /api/cohort-results/{cohortId}/{dataId}  | Remove an existing cohort-result
 
-# 13. Algorithm
+# 11. Algorithm
 
 ENDPOINT                        | DESCRIPTION
 --------------------------------|--------------------------------------------
@@ -141,7 +119,7 @@ PUT    /api/algorithms/{id}     | Fully update an existing algorithm
 PATCH  /api/algorithms/{id}     | Partially update an existing algorithm
 DELETE /api/algorithms/{id}     | Remove an existing algorithm
 
-# 14. CohortAlgorithm 
+# 12. CohortAlgorithm
 
 ENDPOINT                                        | DESCRIPTION
 ------------------------------------------------|---------------------------------------------------------

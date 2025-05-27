@@ -12,19 +12,6 @@ entity User {
     * user_type_id : text <<FK>> (UserType.id)
 }
 
-entity Team {
-    * id : text
-    --
-    * team_name : text
-    * organization_name : text
-    * address : text
-}
-
-entity UserTeam {
-    * user_id : text <<FK>> (User.id)
-    * team_id : text <<FK>> (Team.id)
-}
-
 entity Organization {
     * id : text
     --
@@ -55,7 +42,6 @@ entity Workspace {
     * status : integer
     * creation_date : timestamp
     * creator_id : text <<FK>> (User.id)
-    * team_id : text <<FK>> (Team.id)
     * last_modification_date : timestamp
     * metadata_search : integer  ' Enum: pending/in progress/completed
     * data_access : integer      ' Enum: pending/initiated/submitted/rejected/granted/expired
@@ -72,7 +58,6 @@ entity Permit {
     * update_date : timestamp
     * expiring_date : timestamp
     * status : integer ' Enum: pending/initiated/submitted/rejected/granted/expired/cancelled
-    * team_id : text <<FK>> (Team.id)
     * workspace_id : text <<FK>> (Workspace.id)
     * metadata_id : text <<FK>> (MetadataSearch.id)
 }
@@ -150,9 +135,6 @@ entity CohortAlgorithm {
 ' ---- Relationships ----
 User ||--|| UserType
 User ||--|| Organization
-User ||--o{ UserTeam
-Team ||--o{ UserTeam
-Team ||--o{ Permit
 Workspace ||--o{ Analysis
 Workspace ||--o{ WorkspaceHistory
 Workspace ||--o{ Permit
